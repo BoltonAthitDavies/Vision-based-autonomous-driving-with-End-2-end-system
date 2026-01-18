@@ -5,7 +5,7 @@ Data transforms and augmentation for driving images
 import torchvision.transforms as transforms
 import torch
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 
 def get_train_transforms(input_size=(66, 200)):
@@ -56,7 +56,7 @@ class RandomBrightness:
     
     def __call__(self, img):
         brightness_factor = np.random.uniform(*self.brightness_range)
-        enhancer = Image.Enhance.Brightness(img)
+        enhancer = ImageEnhance.Brightness(img)
         return enhancer.enhance(brightness_factor)
 
 
@@ -72,18 +72,14 @@ class RandomShadow:
             img_array = np.array(img)
             h, w = img_array.shape[:2]
             
-            # Create random shadow region
-            x1, y1 = np.random.randint(0, w), 0
-            x2, y2 = np.random.randint(0, w), h
+            # Create random shadow region using column indices
+            x_start = np.random.randint(0, w // 2)
+            x_end = np.random.randint(w // 2, w)
             
-            # Apply shadow darkening
-            shadow_mask = np.zeros_like(img_array)
-            shadow_mask = np.where(
-                (img_array[:, :, 0] > x1) if x2 > x1 else (img_array[:, :, 0] < x1),
-                img_array * 0.5,
-                img_array
-            )
-            img = Image.fromarray(shadow_mask.astype('uint8'))
+            # Apply shadow darkening to the selected region
+            shadow_img = img_array.copy()
+            shadow_img[:, x_start:x_end, :] = (shadow_img[:, x_start:x_end, :] * 0.5).astype(np.uint8)
+            img = Image.fromarray(shadow_img.astype('uint8'))
         
         return img
 

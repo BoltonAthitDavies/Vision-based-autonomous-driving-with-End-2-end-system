@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 import argparse
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from data.dataset import DrivingDataset
 from data.transforms import get_train_transforms, get_val_transforms

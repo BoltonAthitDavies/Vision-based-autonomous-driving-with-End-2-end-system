@@ -10,7 +10,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from models.pilotnet import PilotNet
 from data.transforms import get_val_transforms
